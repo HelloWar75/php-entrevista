@@ -11,7 +11,7 @@ if (empty($_GET['id'])) {
 $id = $_GET['id'];
 
 // Verifica se usuario existe no banco de dados
-$users = $connection->query("SELECT * FROM users WHERE id = '$id'");
+$users = $connection->query("SELECT * FROM users WHERE id = '$id' LIMIT 1");
 
 if ($users->fetchColumn() > 0) {
     $connection->exec("DELETE FROM users WHERE id = '$id'");
