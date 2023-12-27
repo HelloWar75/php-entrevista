@@ -1,8 +1,8 @@
 <?php
-require 'connection.php';
+require 'loader.php';
 
-$connection = new Connection();
-$users = $connection->query("SELECT * FROM users");
+$userDao = new UserDao($db);
+$users = $userDao->getAll();
 
 include_once 'layout/header.php';
 
@@ -27,129 +27,19 @@ include_once 'layout/header.php';
 
         <!-- NOTIFICATIONS START -->
         <?php
-        // Usuário deletado com sucesso!
-        if (!empty($_GET['info']) && $_GET['info'] === '1') {
+        if (notifyExists()) {
             ?>
             <div class="row">
                 <div class="offset-1 col-10">
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        Usuário deletado com sucesso!
+                    <div class="alert alert-<?php echo $_SESSION['notify_type'] ?> alert-dismissible fade show"
+                        role="alert">
+                        <?php echo $_SESSION['notify_msg'] ?>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 </div>
             </div>
             <?php
-        }
-        ?>
-
-        <?php
-        // Usuário atualizado com sucesso!
-        if (!empty($_GET['info']) && $_GET['info'] === '2') {
-            ?>
-            <div class="row">
-                <div class="offset-1 col-10">
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        Usuário atualizado com sucesso!
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </div>
-            </div>
-            <?php
-        }
-        ?>
-
-        <?php
-        // Usuário adicionado com sucesso!
-        if (!empty($_GET['info']) && $_GET['info'] === '3') {
-            ?>
-            <div class="row">
-                <div class="offset-1 col-10">
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        Usuário adicionado com sucesso!
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </div>
-            </div>
-            <?php
-        }
-        ?>
-
-        <?php
-        // Erro ao deletar o usuário, tente novamente!
-        if (!empty($_GET['error']) && $_GET['error'] === '1') {
-            ?>
-            <div class="row">
-                <div class="offset-1 col-10">
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        Erro ao deletar o usuário, tente novamente!
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </div>
-            </div>
-            <?php
-        }
-        ?>
-
-        <?php
-        // Usuário não existe erro ao tentar editar!
-        if (!empty($_GET['error']) && $_GET['error'] === '2') {
-            ?>
-            <div class="row">
-                <div class="offset-1 col-10">
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        Usuário não existe erro ao tentar editar!
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </div>
-            </div>
-            <?php
-        }
-        ?>
-
-        <?php
-        // Erro ao atualizar o usuário tente novamente!
-        if (!empty($_GET['error']) && $_GET['error'] === '3') {
-            ?>
-            <div class="row">
-                <div class="offset-1 col-10">
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        Erro ao atualizar o usuário tente novamente!
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </div>
-            </div>
-            <?php
-        }
-        ?>
-
-        <?php
-        // Erro ao criar novo usuário!
-        if (!empty($_GET['error']) && $_GET['error'] === '4') {
-            ?>
-            <div class="row">
-                <div class="offset-1 col-10">
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        Erro ao criar novo usuário!
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </div>
-            </div>
-            <?php
-        }
-        ?>
-        <?php
-        // Usuário não existe!
-        if (!empty($_GET['error']) && $_GET['error'] === '5') {
-            ?>
-            <div class="row">
-                <div class="offset-1 col-10">
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        Usuário não existe!
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </div>
-            </div>
-            <?php
+            notifyReset();
         }
         ?>
         <!-- NOTIFICATIONS END -->
@@ -166,18 +56,25 @@ include_once 'layout/header.php';
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($users as $user) {
-                            echo sprintf("<tr>
-                                <td scope='row'><a href='view.php?id=%s'>%s</a></td>
-                                <td>%s</td>
-                                <td>%s</td>
+                        <?php foreach ($users as $user) { ?>
+                            <tr>
+                                <td scope='row'><a href='view.php?id=<?php echo $user->getId() ?>'>
+                                        <?php echo $user->getId() ?>
+                                    </a></td>
                                 <td>
-                                     <a class='btn btn-warning btn-sm' role='button' href='edit.php?id=%s'>Editar</a>
-                                     <a class='btn btn-danger btn-sm' role='button' onclick='return checkDelete()' href='delete.php?id=%s'>Excluir</a>
+                                    <?php echo $user->getName() ?>
                                 </td>
-                             </tr>",
-                                $user->id, $user->id, $user->name, $user->email, $user->id, $user->id);
-                        } ?>
+                                <td>
+                                    <?php echo $user->getEmail() ?>
+                                </td>
+                                <td>
+                                    <a class='btn btn-warning btn-sm' role='button'
+                                        href='edit.php?id=<?php echo $user->getId() ?>'>Editar</a>
+                                    <a class='btn btn-danger btn-sm' role='button' onclick='return checkDelete()'
+                                        href='delete.php?id=<?php echo $user->getId() ?>'>Excluir</a>
+                                </td>
+                            </tr>
+                        <?php } ?>
                     </tbody>
                 </table>
             </div>
