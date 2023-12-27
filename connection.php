@@ -23,10 +23,15 @@ class Connection {
 
     public function query($query)
     {
-        $result      = $this->getConnection()->query($query);
+        $result = $this->getConnection()->query($query);
 
         $result->setFetchMode(PDO::FETCH_INTO, new stdClass);
 
         return $result;
+    }
+
+    public function exec($query)
+    {
+        return $this->getConnection()->exec($query);
     }
 }
