@@ -17,8 +17,7 @@ include_once 'layout/header.php';
     <div class="container py-4">
         <div class="row">
             <div class="offset-1 col-10">
-                <h2 style="margin-bottom: 2px;">Editando usuário:
-                    <?php echo $result->name; ?>
+                <h2 style="margin-bottom: 2px;">Adicionar Usuário
                 </h2>
             </div>
         </div>

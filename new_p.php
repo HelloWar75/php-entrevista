@@ -1,37 +1,26 @@
 <?php
 
-require_once 'connection.php';
+require 'loader.php';
 
-$connection = new Connection();
-$db_conn = $connection->getConnection();
+$userDao = new UserDao($db);
+$colorDao = new ColorDao($db);
 
-// verificar se veio o formulário via post
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // pegar os dados do formulário
     $name = $_POST['name'];
     $email = $_POST['email'];
-    $colors = $_POST['colors'];
+    $colors_ids = $_POST['colors'];
 
-    $insert_user_query = "INSERT INTO users (name, email) VALUES (:name, :email)";
-    $stmt = $db_conn->prepare($insert_user_query);
-    $stmt->bindValue(':name', $name, PDO::PARAM_STR);
-    $stmt->bindValue(':email', $email, PDO::PARAM_STR);
-    $result = $stmt->execute();
-    $user_id = $db_conn->lastInsertId();
+    $user = new User($name, $email);
+    
+    $colors = [];
 
-    if ( $result ) {
-        foreach ($colors as $color) {
-            $insert_into_user_colors = "INSERT INTO user_colors (user_id, color_id) VALUES (:user_id, :color_id)";
-            $color_stmt = $db_conn->prepare($insert_into_user_colors);
-            $color_stmt->bindValue("user_id", $user_id, PDO::PARAM_INT);
-            $color_stmt->bindValue("color_id", $color, PDO::PARAM_INT);
-            $color_stmt->execute();
-        }
+    foreach($colors_ids as $color_id) {
+        array_push($colors, $colorDao->getColorById($color_id));
     }
 
+    $user->setColors($colors);
 
-    header('Location: index.php?info=3');
+    $userDao->insert($user);
 
-} else {
-    header('Location: index.php?error=4');
+    notifyAndRedir('success', 'Usuário adicionado com sucesso!', 'index.php');
 }
