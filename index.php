@@ -60,7 +60,7 @@ include_once 'layout/header.php';
 
         <?php
         // Usuario deletado com sucesso!
-        if (!empty($_GET['info']) && $_GET['info'] === '2') {
+        if (!empty($_GET['info']) && $_GET['info'] === '3') {
             ?>
             <div class="row">
                 <div class="offset-1 col-10">
@@ -124,7 +124,7 @@ include_once 'layout/header.php';
 
         <?php
         // Erro ao deletar usuario!
-        if (!empty($_GET['error']) && $_GET['error'] === '3') {
+        if (!empty($_GET['error']) && $_GET['error'] === '4') {
             ?>
             <div class="row">
                 <div class="offset-1 col-10">
