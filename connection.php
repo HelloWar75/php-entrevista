@@ -13,7 +13,9 @@ class Connection {
 
     private function connect()
     {
-        return $this->connection = new PDO("sqlite:{$this->databaseFile}");
+        $this->connection = new PDO("sqlite:{$this->databaseFile}");
+        $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        return $this->connection;
     }
 
     public function getConnection()
