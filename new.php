@@ -35,7 +35,7 @@ include_once 'layout/header.php';
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="name-label">Nome</span>
                         <input type="text" id="name" name="name" class="form-control" placeholder="Nome"
-                            aria-label="Nome" aria-describedby="name-label" value="<?php echo $result->name ?>">
+                            aria-label="Nome" aria-describedby="name-label">
                     </div>
 
                 </div>
@@ -46,7 +46,7 @@ include_once 'layout/header.php';
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="email-label">E-mail</span>
                         <input type="text" id="email" name="email" class="form-control" placeholder="E-mail"
-                            aria-label="Email" aria-describedby="email-label" value="<?php echo $result->email ?>">
+                            aria-label="Email" aria-describedby="email-label">
                     </div>
 
                 </div>
