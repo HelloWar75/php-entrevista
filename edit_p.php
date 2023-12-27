@@ -1,43 +1,30 @@
 <?php
 
-require_once 'connection.php';
+require 'loader.php';
 
-$connection = new Connection();
-$db_conn = $connection->getConnection();
+$userDao = new UserDao($db);
+$colorDao = new ColorDao($db);
 
-// verificar se veio o formulário via post
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // pegar os dados do formulário
-    $id = $_POST['uid'];
+    $user_id = $_POST['uid'];
     $name = $_POST['name'];
     $email = $_POST['email'];
-    $colors = $_POST['colors'];
+    $colors_ids = $_POST['colors'];
 
-    $update_query = "UPDATE users SET name = :new_name, email = :new_email WHERE id = :id";
-    $stmt = $db_conn->prepare($update_query);
-    $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-    $stmt->bindValue(':new_name', $name, PDO::PARAM_STR);
-    $stmt->bindValue(':new_email', $email, PDO::PARAM_STR);
-    $result = $stmt->execute();
+    $user = $userDao->getUserById((int) $user_id);
+    $user->setName($name);
+    $user->setEmail($email);
+    
+    $colors = [];
 
-    // DELETAR CORES DO USUARIO
-    $colors_delete_query = "DELETE FROM user_colors WHERE user_id = :id";
-    $stmt = $db_conn->prepare($colors_delete_query);
-    $stmt->bindParam(":id", $id);
-    $stmt->execute();
-
-    foreach ($colors as $color) {
-        $insert_into_user_colors = "INSERT INTO user_colors (user_id, color_id) VALUES (:user_id, :color_id)";
-        $color_stmt = $db_conn->prepare($insert_into_user_colors);
-        $color_stmt->bindValue("user_id", $id, PDO::PARAM_INT);
-        $color_stmt->bindValue("color_id", $color, PDO::PARAM_INT);
-        $color_stmt->execute();
+    foreach($colors_ids as $color_id) {
+        array_push($colors, $colorDao->getColorById($color_id));
     }
 
+    $user->setColors($colors);
 
+    $userDao->update($user);
 
-    header('Location: index.php?info=2');
+    notifyAndRedir('success', 'Usuário editado com sucesso!', 'index.php');
 
-} else {
-    header('Location: index.php?error=3');
 }

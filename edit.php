@@ -1,52 +1,27 @@
 <?php
 
-require_once 'connection.php';
+require 'loader.php';
 
-$connection = new Connection();
-$db_conn = $connection->getConnection();
-
-
-include_once 'layout/header.php';
+$userDao = new UserDao($db);
+$colorDao = new ColorDao($db);
 
 // verificar se veio parametro id
 if (empty($_GET['id'])) {
-    header('Location: index.php?error=2');
+    header('Location: index.php?error=5');
 }
 
 $id = $_GET['id'];
 
-$query = "SELECT * FROM users WHERE id = :id";
-$stmt = $db_conn->prepare($query);
-$stmt->bindParam(':id', $id, PDO::PARAM_INT);
-$stmt->execute();
-
-$result = $stmt->fetch(PDO::FETCH_ASSOC);
-$result = $result ? (object) $result : null;
-
-// Buscar todas colors
-$colors_stmt = $db_conn->prepare("SELECT * FROM colors;");
-$colors_stmt->execute();
-
-$colors_result = $colors_stmt->fetchAll(PDO::FETCH_ASSOC);
-
-// Buscar colors do usuario
-$user_colors_query = "SELECT * FROM user_colors WHERE user_id = :user_id";
-$user_colors_stmt = $db_conn->prepare($user_colors_query);
-$user_colors_stmt->bindParam(':user_id', $result->id, PDO::PARAM_INT);
-$user_colors_stmt->execute();
-$user_colors_result = $user_colors_stmt->fetchAll(PDO::FETCH_ASSOC);
+$user = $userDao->getUserById($id);
+$colors = $colorDao->getAll();
 
 $color_array = [];
 
-foreach ($user_colors_result as $c) {
-    array_push($color_array, (string) $c['color_id']);
+foreach ($user->getColors() as $color) {
+    array_push($color_array, (string) $color->getId());
 }
 
-
-if (!$result) {
-    header('Location: index.php?error=2');
-}
-
+include_once 'layout/header.php';
 
 ?>
 
@@ -56,7 +31,7 @@ if (!$result) {
         <div class="row">
             <div class="offset-1 col-10">
                 <h2 style="margin-bottom: 2px;">Editando usuário:
-                    <?php echo $result->name; ?>
+                    <?php echo $user->getName(); ?>
                 </h2>
             </div>
         </div>
@@ -68,14 +43,14 @@ if (!$result) {
 
         <form method="post" action="edit_p.php">
 
-            <input type="hidden" name="uid" value="<?php echo $result->id ?>">
+            <input type="hidden" name="uid" value="<?php echo $user->getId() ?>">
 
             <div class="row">
                 <div class="offset-1 col-10">
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="name-label">Nome</span>
                         <input type="text" id="name" name="name" class="form-control" placeholder="Nome"
-                            aria-label="Nome" aria-describedby="name-label" value="<?php echo $result->name ?>">
+                            aria-label="Nome" aria-describedby="name-label" value="<?php echo $user->getName() ?>">
                     </div>
 
                 </div>
@@ -86,7 +61,7 @@ if (!$result) {
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="email-label">E-mail</span>
                         <input type="text" id="email" name="email" class="form-control" placeholder="E-mail"
-                            aria-label="Email" aria-describedby="email-label" value="<?php echo $result->email ?>">
+                            aria-label="Email" aria-describedby="email-label" value="<?php echo $user->getEmail() ?>">
                     </div>
 
                 </div>
@@ -97,9 +72,9 @@ if (!$result) {
                     <div class="mb-3">
                         <label for="colors" class="form-label">Cores</label>
                         <select id="colors" name="colors[]" class="form-select" multiple>
-                            <?php foreach ($colors_result as $color) { ?>
-                                <option value="<?php echo $color['id'] ?>">
-                                    <?php echo $color['name'] ?>
+                            <?php foreach ($colors as $color) { ?>
+                                <option value="<?php echo $color->getId() ?>">
+                                    <?php echo $color->getName() ?>
                                 </option>
                             <?php } ?>
                         </select>
