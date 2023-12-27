@@ -61,33 +61,35 @@ $users = $connection->query("SELECT * FROM users");
 
             <!-- NOTIFICATIONS START -->
             <?php
-                if (!empty($_GET['info']) && $_GET['info'] === '1') {
-            ?>
-            <div class="row">
-                <div class="offset-1 col-10">
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        Usuário deletado com sucesso!
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            // Usuario deletado com sucesso!
+            if (!empty($_GET['info']) && $_GET['info'] === '1') {
+                ?>
+                <div class="row">
+                    <div class="offset-1 col-10">
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            Usuário deletado com sucesso!
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <?php
-                }
+                <?php
+            }
             ?>
 
             <?php
-                if (!empty($_GET['error']) && $_GET['error'] === '1') {
-            ?>
-            <div class="row">
-                <div class="offset-1 col-10">
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        Erro ao deletar o usuário!
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            // Erro ao deletar usuario!
+            if (!empty($_GET['error']) && $_GET['error'] === '1') {
+                ?>
+                <div class="row">
+                    <div class="offset-1 col-10">
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            Erro ao deletar o usuário, tente novamente!
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <?php
-                }
+                <?php
+            }
             ?>
             <!-- NOTIFICATIONS END -->
 
