@@ -15,9 +15,10 @@ $users = $connection->query("SELECT * FROM users WHERE id = '$id'");
 
 if ($users->fetchColumn() > 0) {
     $connection->exec("DELETE FROM users WHERE id = '$id'");
+    $connection->exec("DELETE FROM user_colors WHERE user_id = '$id'");
     header('Location: index.php?action=1');
 } else {
-    header('Location: index.php?error=2');
+    header('Location: index.php?error=1');
 }
 
 
