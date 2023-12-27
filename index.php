@@ -43,6 +43,22 @@ include_once 'layout/header.php';
         ?>
 
         <?php
+        // Usuario deletado com sucesso!
+        if (!empty($_GET['info']) && $_GET['info'] === '2') {
+            ?>
+            <div class="row">
+                <div class="offset-1 col-10">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        Usuário atualizado com sucesso!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            </div>
+            <?php
+        }
+        ?>
+
+        <?php
         // Erro ao deletar usuario!
         if (!empty($_GET['error']) && $_GET['error'] === '1') {
             ?>
@@ -50,6 +66,38 @@ include_once 'layout/header.php';
                 <div class="offset-1 col-10">
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         Erro ao deletar o usuário, tente novamente!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            </div>
+            <?php
+        }
+        ?>
+
+        <?php
+        // Erro ao deletar usuario!
+        if (!empty($_GET['error']) && $_GET['error'] === '2') {
+            ?>
+            <div class="row">
+                <div class="offset-1 col-10">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        Usuário não existe erro ao tentar editar!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            </div>
+            <?php
+        }
+        ?>
+
+        <?php
+        // Erro ao deletar usuario!
+        if (!empty($_GET['error']) && $_GET['error'] === '3') {
+            ?>
+            <div class="row">
+                <div class="offset-1 col-10">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        Erro ao atualizar o usuário tente novamente!
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 </div>
