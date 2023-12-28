@@ -31,7 +31,7 @@ class ColorDao
             return $colors_list;
 
         } else {
-            throw new Exception("No user found in database");
+            throw new Exception("Erro ao obter lista de cores!");
         }
     }
 
@@ -50,7 +50,7 @@ class ColorDao
         if($result_color) {
             return new Color($result_color['id'], $result_color['name']);
         } else {
-            throw new Exception("Error al obtener el color por su ID");
+            throw new Exception("Erro ao obter cor pelo ID.");
         }
     }
 
