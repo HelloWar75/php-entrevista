@@ -8,11 +8,16 @@ $colorDao = new ColorDao($db);
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
 
     if (empty($_GET['id'])) {
-        header('Location: index.php?error=5');
+        notifyAndRedir('danger', 'ID do usuário não foi enviado!', 'index.php');
     }
 
-    $userDao->delete($userDao->getUserById($_GET['id']));
+    try {
+        $userDao->delete($userDao->getUserById($_GET['id']));
+        notifyAndRedir('success', 'Usuário deletado com sucesso!', 'index.php');
+    } catch ( Exception $e ) {
+        notifyAndRedir('danger', $e->getMessage(), 'index.php');
+    }
 
-    notifyAndRedir('success', 'Usuário deletado com sucesso!', 'index.php');
+    
 
 }
