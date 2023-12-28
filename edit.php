@@ -7,18 +7,22 @@ $colorDao = new ColorDao($db);
 
 // verificar se veio parametro id
 if (empty($_GET['id'])) {
-    header('Location: index.php?error=5');
+    notifyAndRedir('danger', 'ID do usuario não enviado!', 'index.php');
 }
 
-$id = $_GET['id'];
+try {
+    $id = $_GET['id'];
 
-$user = $userDao->getUserById($id);
-$colors = $colorDao->getAll();
+    $user = $userDao->getUserById($id);
+    $colors = $colorDao->getAll();
 
-$color_array = [];
+    $color_array = [];
 
-foreach ($user->getColors() as $color) {
-    array_push($color_array, (string) $color->getId());
+    foreach ($user->getColors() as $color) {
+        array_push($color_array, (string) $color->getId());
+    }
+} catch ( Exception $e) {
+    notifyAndRedir('danger', $e->getMessage(), 'index.php');
 }
 
 include_once 'layout/header.php';
