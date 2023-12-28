@@ -1,14 +1,12 @@
 <?php
+require 'loader.php';
 
-require_once 'connection.php';
-
-$connection = new Connection();
-$db_conn = $connection->getConnection();
-
-// Buscar todas colors
-$colors_stmt = $db_conn->prepare("SELECT * FROM colors;");
-$colors_stmt->execute();
-$colors_result = $colors_stmt->fetchAll(PDO::FETCH_ASSOC);
+try {
+    $colorDao = new ColorDao($db);
+    $colors = $colorDao->getAll();
+} catch (Exception $e) {
+    notifyAndRedir('danger', $e->getMessage(), 'index.php');
+}
 
 include_once 'layout/header.php';
 ?>
@@ -56,9 +54,9 @@ include_once 'layout/header.php';
                     <div class="mb-3">
                         <label for="colors" class="form-label">Cores</label>
                         <select id="colors" name="colors[]" class="form-select" multiple>
-                            <?php foreach ($colors_result as $color) { ?>
-                                <option value="<?php echo $color['id'] ?>">
-                                    <?php echo $color['name'] ?>
+                            <?php foreach ($colors as $color) { ?>
+                                <option value="<?php echo $color->getId() ?>">
+                                    <?php echo $color->getName() ?>
                                 </option>
                             <?php } ?>
                         </select>
